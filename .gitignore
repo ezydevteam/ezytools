@@ -1,0 +1,71 @@
+*.log
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Dependencies
+/vendor/
+/node_modules/
+
+# Build output
+/public/build/
+/public/hot/
+/public/storage
+
+# Laravel
+/storage/*.key
+/storage/pail
+/bootstrap/cache/*.php
+/bootstrap/ssr
+
+# Bangla fonts (large binary — deploy via SFTP)
+/public/fonts/bangla/*.ttf
+/public/fonts/bangla/*.otf
+
+# PDF & voice temp files
+/storage/app/private/pdf-jobs/
+/storage/app/private/voice-jobs/
+
+# Log files
+/storage/logs/
+
+# Testing
+/coverage/
+.phpunit.result.cache
+/.phpunit.cache
+
+# IDE files
+/.idea/
+/.vscode/
+/.cursor/
+/.nova/
+/.zed/
+/.codex
+
+# PHP tooling
+/auth.json
+_ide_helper.php
+.phpactor.json
+Homestead.json
+Homestead.yaml
+
+# Scratch / temporary scripts
+/scratch/
+
+# Auto-generated agent rules
+.brainsync/agent-rules.md
+.cursorrules
+.clineRules
+.agent/
+.windsurfrules
+.gemini/
+.cline/
+.agent-mem/
+AGENT.md
+CLAUDE.md

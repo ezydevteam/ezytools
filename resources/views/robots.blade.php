@@ -1,0 +1,1 @@
+{!! \App\Models\SiteSetting::getValue('robots_txt', "User-agent: *\nAllow: /\nAllow: /tools/\nAllow: /blog/\nAllow: /sitemap.xml\n\nDisallow: /admin/\nDisallow: /dashboard/\nDisallow: /api/\nDisallow: /login\nDisallow: /register\nDisallow: /storage/\n\nSitemap: " . url('/sitemap.xml')) !!}

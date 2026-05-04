@@ -1,0 +1,22 @@
+<template>
+    <AiToolWrapper :remaining="remainingRequests"><div class="bg-white dark:bg-surface-800 p-6 rounded-2xl shadow-sm border border-surface-200 dark:border-surface-700"><div class="grid grid-cols-1 lg:grid-cols-2 gap-6"><div class="space-y-4">
+        <div><label class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">Topic / Article Summary</label><textarea v-model="inputText" rows="3" :maxlength="maxLength" class="block w-full rounded-xl border-surface-300 dark:border-surface-600 bg-surface-50 dark:bg-surface-900 text-surface-900 dark:text-white focus:ring-primary-500 focus:border-primary-500 text-base p-4 resize-y" placeholder="Enter topic or article summary..."></textarea></div>
+        <div class="grid grid-cols-2 gap-4">
+            <div><label class="block text-xs font-medium text-surface-500 mb-1">Content Type</label><select v-model="options.content_type" class="block w-full rounded-lg border-surface-300 dark:border-surface-600 bg-white dark:bg-surface-800 text-sm focus:ring-primary-500 focus:border-primary-500"><option v-for="t in types" :key="t" :value="t">{{ t }}</option></select></div>
+            <div><label class="block text-xs font-medium text-surface-500 mb-1">Headline Style</label><select v-model="options.style" class="block w-full rounded-lg border-surface-300 dark:border-surface-600 bg-white dark:bg-surface-800 text-sm focus:ring-primary-500 focus:border-primary-500"><option v-for="s in styles" :key="s" :value="s">{{ s }}</option></select></div>
+            <div><label class="block text-xs font-medium text-surface-500 mb-1">Number</label><select v-model="options.count" class="block w-full rounded-lg border-surface-300 dark:border-surface-600 bg-white dark:bg-surface-800 text-sm focus:ring-primary-500 focus:border-primary-500"><option value="5">5</option><option value="10">10</option><option value="15">15</option></select></div>
+            <LanguageSelector v-model="options.language" />
+        </div>
+        <div><label class="block text-xs font-medium text-surface-500 mb-1">Target Keyword (optional)</label><input v-model="options.keyword" type="text" class="block w-full rounded-lg border-surface-300 dark:border-surface-600 bg-surface-50 dark:bg-surface-900 text-sm p-2.5" placeholder="SEO keyword" /></div>
+        <button @click="handleGenerate" :disabled="!inputText || isLoading" class="w-full py-3 px-4 bg-gradient-to-r from-primary-600 to-purple-600 hover:from-primary-700 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium rounded-xl transition-colors flex items-center justify-center gap-2 shadow-sm"><svg v-if="isLoading" class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>{{ isLoading ? 'Generating...' : 'Generate Headlines' }}</button>
+        <div v-if="error" class="p-3 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-lg text-sm border border-red-100 dark:border-red-800">{{ error }}</div>
+    </div><AiOutputCard :content="result" :loading="isLoading" :language="options.language" title="Headlines" loadingText="Generating headlines..." :showCopy="true" /></div></div></AiToolWrapper>
+</template>
+<script setup>
+import { ref, computed } from 'vue';import { usePage } from '@inertiajs/vue3';import AiToolWrapper from '@/Components/Ai/AiToolWrapper.vue';import AiOutputCard from '@/Components/Ai/AiOutputCard.vue';import LanguageSelector from '@/Components/Ai/LanguageSelector.vue';import { useAiRequest } from '@/Composables/useAiRequest';
+const props = defineProps({ tool: Object });const page = usePage();const isPro = computed(() => page.props.auth.user?.is_pro || false);const maxLength = computed(() => { const c = props.tool.ai_config; return c ? (isPro.value ? c.max_input_length_pro : c.max_input_length_free) : 1000; });
+const types = ['Blog Post','News Article','YouTube Video','Facebook Post','Email Subject Line','Ad Headline'];
+const styles = ['How-To','Listicle','Question','Curiosity Gap','Direct Benefit','Urgency','Controversial'];
+const inputText = ref('');const options = ref({ content_type: 'Blog Post', style: 'How-To', count: '10', language: 'english_us', keyword: '' });
+const { isLoading, error, result, remainingRequests, generate } = useAiRequest();const handleGenerate = () => { generate(props.tool.slug, inputText.value, options.value); };
+</script>
